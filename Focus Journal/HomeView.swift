@@ -16,7 +16,7 @@ struct HomeView: View {
   @State private var entryText: String = ""
   @State private var flowConfig: AdaptyUI.FlowConfiguration?
   
-  @State private var isShowingPaywall = false
+  @State private var isShowingFlow = false
   @State private var isShowingHistory = false
   
   var body: some View {
@@ -44,7 +44,7 @@ struct HomeView: View {
         if profileManager.isPremium {
           isShowingHistory = true
         } else {
-          isShowingPaywall = true
+          isShowingFlow = true
         }
       } label: {
         Text("View History")
@@ -58,7 +58,7 @@ struct HomeView: View {
     }
     .iflet(flowConfig, transform: { view, unwrappedFlowConfig in
       view.flow(
-        isPresented: $isShowingPaywall,
+        isPresented: $isShowingFlow,
         fullScreen: false,
         flowConfiguration: flowConfig,
         didFinishPurchase: { _, purchaseResult in
@@ -68,22 +68,22 @@ struct HomeView: View {
             default:
               break
           }
-          isShowingPaywall = false
+          isShowingFlow = false
         },
         didFailPurchase: { _, error in
-          isShowingPaywall = false
+          isShowingFlow = false
           // TODO: Present error to user and offer alternative
         },
         didFinishRestore: { profile in
           profileManager.subscriptionPurchased(with: profile)
-          isShowingPaywall = false
+          isShowingFlow = false
         },
         didFailRestore: { error in
-          isShowingPaywall = false
+          isShowingFlow = false
           // TODO: Present error to user and offer alternative
         },
         didReceiveError: { error in
-          isShowingPaywall = false
+          isShowingFlow = false
           // TODO: Present error to user and offer alternative
         })
     })
