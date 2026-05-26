@@ -14,7 +14,7 @@ struct HomeView: View {
   @Environment(ProfileManager.self) private var profileManager
   
   @State private var entryText: String = ""
-  @State private var paywallConfig: AdaptyUI.PaywallConfiguration?
+  @State private var flowConfig: AdaptyUI.FlowConfiguration?
   
   @State private var isShowingPaywall = false
   @State private var isShowingHistory = false
@@ -56,11 +56,11 @@ struct HomeView: View {
         HistoryView()
       }
     }
-    .iflet(paywallConfig, transform: { view, unwrappedPaywallConfig in
-      view.paywall(
+    .iflet(flowConfig, transform: { view, unwrappedFlowConfig in
+      view.flow(
         isPresented: $isShowingPaywall,
         fullScreen: false,
-        paywallConfiguration: paywallConfig,
+        flowConfiguration: flowConfig,
         didFinishPurchase: { _, purchaseResult in
           switch purchaseResult {
             case .success(let profile, _):
@@ -82,7 +82,7 @@ struct HomeView: View {
           isShowingPaywall = false
           // TODO: Present error to user and offer alternative
         },
-        didFailRendering: { error in
+        didReceiveError: { error in
           isShowingPaywall = false
           // TODO: Present error to user and offer alternative
         })
@@ -90,11 +90,11 @@ struct HomeView: View {
     .task {
       do {
         if !profileManager.isPremium {
-          let paywall = try await Adapty.getPaywall(placementId: AppConstants.Adapty.placementID)
-          paywallConfig = try await AdaptyUI.getPaywallConfiguration(forPaywall: paywall)
+          let flow = try await Adapty.getFlow(placementId: AppConstants.Adapty.placementID)
+          flowConfig = try await AdaptyUI.getFlowConfiguration(forFlow: flow, locale: "en")
         }
       } catch {
-        print("Error fetching paywall or paywall config: \(error)")
+        print("Error fetching flow or flow config: \(error)")
       }
     }
   }
