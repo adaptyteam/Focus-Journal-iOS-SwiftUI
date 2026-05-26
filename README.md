@@ -19,11 +19,11 @@ This repository demonstrates how to integrate the [Adapty SDK](https://adapty.io
 
 ## Project Overview
 
-**Focus Journal** is a simple mood journal app that lets users log a daily mood entry and view their history. In the “premium” flow, tapping “History” triggers a paywall if the user is not subscribed. The Adapty SDK is used to:
+**Focus Journal** is a simple mood journal app that lets users log a daily mood entry and view their history. In the “premium” flow, tapping “History” triggers a paywall flow if the user is not subscribed. The Adapty SDK is used to:
 
 1. **Activate Adapty at launch**  
 2. **Fetch the user’s profile and determine access**  
-3. **Display a customizable paywall UI**  
+3. **Display a customizable flow UI**  
 4. **Handle purchase/restore callbacks**  
 
 You can follow along on the `starter` branch to add Adapty manually, or inspect the `main` branch to see the final result.
@@ -82,7 +82,7 @@ You can follow along on the `starter` branch to add Adapty manually, or inspect 
 3.	Add your Adapty API key to AppConstants.swift.
 4.	Build & run and you’ll see Adapty initialize itself.
 
-Note: You need the products, placements, and paywalls already defined in your Adapty dashboard. See [these docs]() for help.
+Note: You need the products, placements, and flows already defined in your Adapty dashboard. See [these docs](https://adapty.io/docs/quickstart) for help.
 
 You should now have a working Adapty integration in a SwiftUI-based iOS app. Feel free to explore the main branch to see the complete implementation or continue customizing the UI in HomeView.swift and ProfileManager.swift.
 
