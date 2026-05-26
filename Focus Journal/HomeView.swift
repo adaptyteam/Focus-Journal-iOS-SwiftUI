@@ -55,7 +55,7 @@ struct HomeView: View {
     }
     .sheet(isPresented: $isShowingPaywall) {
       Button {
-        profileManager.subscriptionPurchased()
+        profileManager.purchasePremium()
         isShowingPaywall = false
       } label: {
         Text("Unlock Premium")
