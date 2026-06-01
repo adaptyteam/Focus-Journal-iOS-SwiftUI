@@ -14,9 +14,9 @@ struct HomeView: View {
   @Environment(ProfileManager.self) private var profileManager
   
   @State private var entryText: String = ""
-  @State private var paywallConfig: AdaptyUI.PaywallConfiguration?
+  @State private var flowConfig: AdaptyUI.FlowConfiguration?
   
-  @State private var isShowingPaywall = false
+  @State private var isShowingFlow = false
   @State private var isShowingHistory = false
   
   var body: some View {
@@ -44,7 +44,7 @@ struct HomeView: View {
         if profileManager.isPremium {
           isShowingHistory = true
         } else {
-          isShowingPaywall = true
+          isShowingFlow = true
         }
       } label: {
         Text("View History")
@@ -56,11 +56,11 @@ struct HomeView: View {
         HistoryView()
       }
     }
-    .iflet(paywallConfig, transform: { view, unwrappedPaywallConfig in
-      view.paywall(
-        isPresented: $isShowingPaywall,
+    .iflet(flowConfig, transform: { view, unwrappedFlowConfig in
+      view.flow(
+        isPresented: $isShowingFlow,
         fullScreen: false,
-        paywallConfiguration: paywallConfig,
+        flowConfiguration: flowConfig,
         didFinishPurchase: { _, purchaseResult in
           switch purchaseResult {
             case .success(let profile, _):
@@ -68,33 +68,33 @@ struct HomeView: View {
             default:
               break
           }
-          isShowingPaywall = false
+          isShowingFlow = false
         },
         didFailPurchase: { _, error in
-          isShowingPaywall = false
+          isShowingFlow = false
           // TODO: Present error to user and offer alternative
         },
         didFinishRestore: { profile in
           profileManager.subscriptionPurchased(with: profile)
-          isShowingPaywall = false
+          isShowingFlow = false
         },
         didFailRestore: { error in
-          isShowingPaywall = false
+          isShowingFlow = false
           // TODO: Present error to user and offer alternative
         },
-        didFailRendering: { error in
-          isShowingPaywall = false
+        didReceiveError: { error in
+          isShowingFlow = false
           // TODO: Present error to user and offer alternative
         })
     })
     .task {
       do {
         if !profileManager.isPremium {
-          let paywall = try await Adapty.getPaywall(placementId: AppConstants.Adapty.placementID)
-          paywallConfig = try await AdaptyUI.getPaywallConfiguration(forPaywall: paywall)
+          let flow = try await Adapty.getFlow(placementId: AppConstants.Adapty.placementID)
+          flowConfig = try await AdaptyUI.getFlowConfiguration(forFlow: flow, locale: "en")
         }
       } catch {
-        print("Error fetching paywall or paywall config: \(error)")
+        print("Error fetching flow or flow config: \(error)")
       }
     }
   }
